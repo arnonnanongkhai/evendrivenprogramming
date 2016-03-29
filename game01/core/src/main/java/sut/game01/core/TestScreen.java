@@ -3,41 +3,43 @@ package sut.game01.core;
 import static playn.core.PlayN.*;
 
 import playn.core.*;
-
-import tripleplay.game.ScreenStack;
+//import tripleplay.game.ScreenStack;
 import tripleplay.game.*;
-
-
-public class TestScreen extends Screen {
+public class TestScreen extends UIScreen {
 
   private final ScreenStack ss;
-  private final ImageLayer bg;
-  private final Image backImage;
-  private final Image bgImage;
-  private final ImageLayer backButton;
+
+   
+   private ImageLayer bgLayer;
+   private ImageLayer backLayer;
+
+  //private Image startImage;
+  //private ImageLayer startLayer;
+
+  public static final Font TITLE_FONT = graphics().createFont("Helvetica",Font.Style.PLAIN,24);
+
   public TestScreen(final ScreenStack ss) {
       this.ss = ss;
-
-    bgImage = assets().getImage("images/bg.png");
-    bg = graphics().createImageLayer(bgImage);
-    this.layer.add(bg);
-  
-   backImage = assets().getImage("images/back.png");
-   backButton = graphics().createImageLayer(backImage);
-   backButton.setTranslation(10,10);
+     Image  bgImage = assets().getImage("images/bg2.png");
+      bgLayer = graphics().createImageLayer(bgImage);
    
-   backButton.addListener(new Mouse.LayerAdapter(){
-      public void onMouseUp (Mouse.ButtonEvent event){
-        ss.remove(ss.top());
-      }
-   });
+      Image  startImage = assets().getImage("images/back.png");
+      backLayer = graphics().createImageLayer(startImage);
+
+      backLayer.addListener(new Mouse.LayerAdapter(){
+        @Override
+        public void onMouseUp(Mouse.ButtonEvent event){
+            ss.remove(ss.top());
+        }
+      });
+  }
+  
+  public void wasShown(){
+    super.wasShown();
+    
+    this.layer.add(bgLayer);
+    this.layer.add(backLayer);
 
   }
 
-   public void wasShown(){
-    super.wasShown();
-    this.layer.add(bg);
-    this.layer.add(backButton);
-    }
- 
 }

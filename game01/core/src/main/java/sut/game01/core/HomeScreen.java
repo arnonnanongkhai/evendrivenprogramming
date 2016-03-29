@@ -1,57 +1,61 @@
 package sut.game01.core;
 
 import static playn.core.PlayN.*;
-import playn.core.Font;
-import tripleplay.game.UIScreen;
-import tripleplay.ui.*;
-import tripleplay.ui.layout.*;
 
-import tripleplay.game.ScreenStack;
-import tripleplay.game.Screen;
-import react.UnitSlot;
+import playn.core.*;
+//import tripleplay.game.ScreenStack;
+import tripleplay.game.*;
 
-/**
- * Created by Administrator on 23/3/2559.
- */
 public class HomeScreen extends UIScreen {
-    public static final Font TITLE_FONT = graphics().createFont(
-            "Helvetica",
-            Font.Style.PLAIN,
-            24);
 
-    private final ScreenStack ss;
-    private Root root;
-    private final TestScreen testScreen;
+  private final ScreenStack ss;
+  private final TestScreen testScreen;
 
-    public HomeScreen(ScreenStack ss){
-        this.ss = ss;
-        this.testScreen = new TestScreen(ss);
-    }
+   
+   private ImageLayer bgLayer;
+   private ImageLayer startButton;
+   private ImageLayer shopButton;
+   private ImageLayer optionButton;
+   private ImageLayer exitButton;
 
-    @Override
-    public void wasShown(){
-        super.wasShown();
-        root = iface.createRoot(
-            AxisLayout.vertical().gap(15),
-            SimpleStyles.newSheet(), layer);
+  public static final Font TITLE_FONT = graphics().createFont("Helvetica",Font.Style.PLAIN,24);
 
-        root.addStyles(Style.BACKGROUND
-            .is(Background.bordered(0xFFCCCCCC, 0xFF99CCFF, 5)
-            .inset(5 ,10)));
-        root.setSize(width(), height());
+  public HomeScreen(final ScreenStack ss) {
+      this.ss = ss;
+      testScreen = new TestScreen(ss);
+      Image  bgImage = assets().getImage("images/bg.png");
+      bgLayer = graphics().createImageLayer(bgImage);
+   
+      Image  startImage = assets().getImage("images/start.png");
+      this.startButton = graphics().createImageLayer(startImage);
+      Image  shopImage = assets().getImage("images/shop.png");
+      this.shopButton = graphics().createImageLayer(shopImage);
+      Image  optionImage = assets().getImage("images/option.png");
+      this.optionButton = graphics().createImageLayer(optionImage);
+      Image  exitImage = assets().getImage("images/exit.png");
+      this.exitButton = graphics().createImageLayer(exitImage);
 
-        root.add(new Label("Even Driven Programming")
-            .addStyles(Style.FONT.is(HomeScreen.TITLE_FONT)));
+      startButton.setTranslation(230,95);
+      shopButton.setTranslation(230,195);
+      optionButton.setTranslation(230,295);
+      exitButton.setTranslation(230,395);
 
-        root.add(new Button("Start").onClick(new UnitSlot(){
-            public void onEmit(){
-                ss.push(testScreen);
-            }
-        }));
-
-
-
-           
-    }
+      startButton.addListener(new Mouse.LayerAdapter(){
+        @Override
+        public void onMouseUp(Mouse.ButtonEvent event){
+            ss.push(testScreen);
+        }
+      });
+  }
+  
+  public void wasShown(){
+    super.wasShown();
+    
+    this.layer.add(bgLayer);
+    this.layer.add(startButton);
+    this.layer.add(shopButton);
+    this.layer.add(optionButton);
+    this.layer.add(exitButton);
+  }
 
 }
