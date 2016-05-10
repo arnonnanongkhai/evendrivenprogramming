@@ -8,7 +8,7 @@
   </parent>
 
   <groupId>sut.game01</groupId>
-  <artifactId>à?game01</artifactId>
+  <artifactId>?game01</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>MyGame Metaproject</name>

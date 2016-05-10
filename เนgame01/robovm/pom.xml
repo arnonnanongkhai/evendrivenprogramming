@@ -5,11 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>sut.game01</groupId>
-    <artifactId>เน€เgame01</artifactId>
+    <artifactId>เนgame01</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>เน€เgame01-robovm</artifactId>
+  <artifactId>เนgame01-robovm</artifactId>
   <packaging>jar</packaging>
   <name>MyGame RoboVM</name>
 
@@ -20,7 +20,7 @@
   <dependencies>
     <dependency>
       <groupId>sut.game01</groupId>
-      <artifactId>เน€เgame01-core</artifactId>
+      <artifactId>เนgame01-core</artifactId>
       <version>${project.version}</version>
     </dependency>
 

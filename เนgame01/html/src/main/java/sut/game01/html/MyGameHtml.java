@@ -13,7 +13,7 @@ public class MyGameHtml extends HtmlGame {
     HtmlPlatform.Config config = new HtmlPlatform.Config();
     // use config to customize the HTML platform, if needed
     HtmlPlatform platform = HtmlPlatform.register(config);
-    platform.assets().setPathPrefix("เน€เgame01/");
+    platform.assets().setPathPrefix("เนgame01/");
     PlayN.run(new MyGame());
   }
 }

@@ -5,11 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>sut.game01</groupId>
-    <artifactId>เน€เgame01</artifactId>
+    <artifactId>เนgame01</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>เน€เgame01-assets</artifactId>
+  <artifactId>เนgame01-assets</artifactId>
   <packaging>jar</packaging>
   <name>MyGame Assets</name>
 </project>
