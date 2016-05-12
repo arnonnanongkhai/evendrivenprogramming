@@ -10,6 +10,7 @@ import playn.core.util.*;
 //import tripleplay.game.ScreenStack;
 import tripleplay.game.*;
 import sut.game01.core.*;
+import org.jbox2d.dynamics.contacts.Contact;
 public class Zealot {
 
   
@@ -20,6 +21,9 @@ public class Zealot {
     private float x;
     private float y;
     private Body body;
+    private boolean contacted;
+    private int contactCheck;
+    private Body other;
 
       public enum State {
         IDLE,RUN,ATTK
@@ -71,7 +75,7 @@ public class Zealot {
    public void update(int delta) {
       if (hasLoaded == false) return;
 
-       PlayN.keyboard().setListener(new Keyboard.Adapter() {
+      /* PlayN.keyboard().setListener(new Keyboard.Adapter() {
            @Override
            public void onKeyUp(Keyboard.Event event){
                if(event.key() == Key.SPACE){
@@ -83,7 +87,38 @@ public class Zealot {
                }
            }
        });
+*/
 
+
+       PlayN.keyboard().setListener((new  Keyboard.Adapter(){
+           @Override
+           public void onKeyUp(Keyboard.Event event) {
+               if(event.key() == Key.RIGHT){
+                   switch(state){
+                       case IDLE: state =State.RUN;
+                           if(state == State.RUN){
+                               body.applyForce(new Vec2(300f,0f),body.getPosition());
+                               break;
+
+                           }
+
+                       case RUN: state =State.IDLE;
+                   }
+
+               }
+               if(event.key() == Key.SPACE){
+                   jump();
+               }
+           }
+       }));
+      /* PlayN.keyboard().setListener((new  Keyboard.Adapter(){
+           @Override
+           public void onKeyUp(Keyboard.Event event) {
+               if(event.key() == Key.LEFT){
+                   body.applyForce(new Vec2(-300f,0f),body.getPosition());
+               }
+           }
+       }));*/
 
 
       e += delta;
@@ -93,6 +128,9 @@ public class Zealot {
           case IDLE: offset = 0;
                      break;
           case RUN: offset = 4;
+                  if(spriteIndex ==6){
+                      state = State.IDLE;
+                  }
                      break;
           case ATTK: offset = 8;
                     if(spriteIndex ==10){
@@ -134,11 +172,31 @@ public class Zealot {
     }
     public void paint(Clock clock){
         if(!hasLoaded) return;
-
+        sprite.layer().setRotation(body.getAngle());
         sprite.layer().setTranslation(
                 (body.getPosition().x / TestScreen.M_PER_PIXEL ),
                 body.getPosition().y / TestScreen.M_PER_PIXEL);
 
+    }
+
+    public void contact(Contact contact){
+        contacted = true;
+        contactCheck = 0;
+
+        if(state == State.ATTK ){
+            state = State.IDLE;
+        }
+        if(contact.getFixtureA().getBody()==body){
+            other = contact.getFixtureB().getBody();
+        }else{
+            other = contact.getFixtureA().getBody();
+        }
+    }
+    public void jump(){
+        body.applyForce(new Vec2(-10,-1600f),body.getPosition());
+    }
+    public Body getBody(){
+        return this.body;
     }
 
 }
