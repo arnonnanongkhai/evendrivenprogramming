@@ -109,6 +109,19 @@ public class Zealot {
                if(event.key() == Key.SPACE){
                    jump();
                }
+               if(event.key() == Key.LEFT){
+                   switch(state){
+                       case IDLE: state =State.RUN;
+                           if(state == State.RUN){
+                               body.applyForce(new Vec2(-300f,0f),body.getPosition());
+                               break;
+
+                           }
+
+                       case RUN: state =State.IDLE;
+                   }
+
+               }
            }
        }));
       /* PlayN.keyboard().setListener((new  Keyboard.Adapter(){
@@ -163,6 +176,8 @@ public class Zealot {
         fixtureDef.restitution = 0.35f;
         body.createFixture(fixtureDef);
 
+        body.setFixedRotation(true);
+
         //body.createFixture(fixtureDef);
 
         body.setLinearDamping(0.2f);
@@ -172,7 +187,7 @@ public class Zealot {
     }
     public void paint(Clock clock){
         if(!hasLoaded) return;
-        sprite.layer().setRotation(body.getAngle());
+       // sprite.layer().setRotation(body.getAngle());
         sprite.layer().setTranslation(
                 (body.getPosition().x / TestScreen.M_PER_PIXEL ),
                 body.getPosition().y / TestScreen.M_PER_PIXEL);

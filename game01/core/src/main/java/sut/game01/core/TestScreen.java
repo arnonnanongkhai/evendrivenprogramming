@@ -45,7 +45,7 @@ public class TestScreen extends Screen {
     private List<Zealot> plantMap;
     private HashMap<Object, String> bodies;
     private List<Coin> coinList;
-    public static final Font TITLE_FONT = graphics().createFont("Helvetica",Font.Style.PLAIN,24);
+    public static final Font TITLE_FONT = graphics().createFont("Helvetica",Font.Style.PLAIN,36);
 
     private int i = 0;
 
