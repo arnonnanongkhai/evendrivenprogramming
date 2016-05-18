@@ -19,11 +19,13 @@ import java.util.*;
 import sut.game01.core.Zealot;
 public class TestScreen extends Screen {
 
-  private final ScreenStack ss;
-  // private ImageLayer bgLayer;
+ // private final ScreenStack ss;
+   private ImageLayer bgLayer;
    private ImageLayer backLayer;
 
    private  Zealot z;
+    private Thief t;
+    private static List <Leaf> leafList;
 
     private World world;
     private Coin coin;
@@ -42,29 +44,34 @@ public class TestScreen extends Screen {
     private boolean showDebugDraw = true;
     private DebugDrawBox2D debugDraw;
 
-    private List<Zealot> plantMap;
+
     private HashMap<Object, String> bodies;
-    private List<Coin> coinList;
     public static final Font TITLE_FONT = graphics().createFont("Helvetica",Font.Style.PLAIN,36);
 
     private int i = 0;
 
+    public TestScreen(){
+
+    }
+
 
 
   public TestScreen(final ScreenStack ss) {
-      this.ss = ss;
+      //this.ss = ss;
       Vec2 gravity = new Vec2(0.0f,10.0f);
       world = new World(gravity);
       world.setWarmStarting(true);
       world.setAutoClearForces(true);
 
-      plantMap = new ArrayList<Zealot>();
-      coinList = new ArrayList<Coin>();
+
       bodies =  new HashMap<Object, String>();
+      leafList = new ArrayList<Leaf>();
 
 
-     // Image  bgImage = assets().getImage("images/bg2.png");
-      //bgLayer = graphics().createImageLayer(bgImage);
+
+
+      Image  bgImage = assets().getImage("images/bg2.png");
+      bgLayer = graphics().createImageLayer(bgImage);
    
       Image  startImage = assets().getImage("images/back.png");
       backLayer = graphics().createImageLayer(startImage);
@@ -78,7 +85,7 @@ public class TestScreen extends Screen {
 
 
       z = new Zealot(world,100f, 400f);
-      bodies.put(z.getBody(), "plantman_1");
+      t = new Thief(world,500f,400f);
       coin = new Coin(world,100f,250f);
       coin2 = new Coin(world,200,250f);
       coin3 = new Coin(world,300,250f);
@@ -92,9 +99,10 @@ public class TestScreen extends Screen {
   public void wasShown(){
     super.wasShown();
     
-    //this.layer.add(bgLayer);
+      this.layer.add(bgLayer);
       this.layer.add(backLayer);
       this.layer.add(z.layer());
+      this.layer.add(t.layer());
       this.layer.add(coin.layer());
       this.layer.add(coin2.layer());
       this.layer.add(coin3.layer());
@@ -124,35 +132,7 @@ public class TestScreen extends Screen {
           debugDraw.setCamera(0, 0, 1f / M_PER_PIXEL);
           world.setDebugDraw(debugDraw);
       }
-     /* mouse().setListener(new Mouse.Adapter(){
-          @Override
-          public void onMouseUp(Mouse.ButtonEvent event) {
-              //Zealot he = new Zealot(world, (float)event.x(), (float)event.y());
-              //plantMap.add(he);
-              BodyDef bodyDef = new BodyDef();
-              bodyDef.type = BodyType.DYNAMIC;
-              bodyDef.position = new Vec2(event.x() /26.666667f, event.y() / 26.666667f);
-              Body body = world.createBody(bodyDef);
 
-              bodies.put(body, "test_ " + i);
-              i++;
-              CircleShape shape = new CircleShape();
-              shape.setRadius(1f);
-              FixtureDef fixtureDef = new FixtureDef();
-              fixtureDef.shape = shape;
-              fixtureDef.density = 0.4f;
-              fixtureDef.friction = 0.1f;
-              fixtureDef.restitution = 1f;
-              body.createFixture(fixtureDef);
-              body.setLinearDamping(0.2f);
-          }
-      });
-*/
-
-      for(Zealot h: plantMap){
-          System.out.println("add");
-          this.layer.add(h.layer());
-      }
 
       world.setContactListener(new ContactListener() {
           @Override
@@ -191,6 +171,11 @@ public class TestScreen extends Screen {
                   coinCheck4 = 0;
                   core++;
               }
+              for(Leaf l :leafList){
+                  if((a == l.getBody() &&  b == t.getBody()) || (a == t.getBody() && b == l.getBody())){
+                      l.contact(contact);
+                  }
+              }
 
           }
 
@@ -213,18 +198,21 @@ public class TestScreen extends Screen {
   }
   @Override
    public void update(int delta) {
-    super.update(delta);
-    z.update(delta);
+      super.update(delta);
+      world.step(0.033f, 10, 10);
+      z.update(delta);
+      t.update(delta);
+      t.RunThief();
       coin.update(delta);
       coin2.update(delta);
       coin3.update(delta);
       coin4.update(delta);
-      for(Zealot h: plantMap){
-          //System.out.println("update");
-          this.layer.add(h.layer());
-          h.update(delta);
+      for(Leaf l : leafList){
+          l.update(delta);
+          this.layer.add(l.layer());
       }
-      world.step(0.033f, 10, 10);
+
+
       if(coinCheck == 0){
           coin.layer().setVisible(false);
       }
@@ -244,19 +232,25 @@ public class TestScreen extends Screen {
     public void paint(Clock clock) {
         super.paint(clock);
         z.paint(clock);
+        t.paint(clock);
+        t.RunThief();
+        for (Leaf l : leafList){
+            l.paint(clock);
+        }
+
         coin.paint(clock);
         coin2.paint(clock);
         coin3.paint(clock);
         coin4.paint(clock);
-        for(Zealot h: plantMap){
-            //System.out.println("paint");
-            h.paint(clock);
-        }
+
         if(showDebugDraw){
             debugDraw.getCanvas().clear();
             world.drawDebugData();
             debugDraw.getCanvas().setFillColor(Color.rgb(255,255,255));
             debugDraw.getCanvas().drawText(String.valueOf(core),100,100);
         }
+    }
+    public static void addLeaf(Leaf l){
+        leafList.add(l);
     }
 }

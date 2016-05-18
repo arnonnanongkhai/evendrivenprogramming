@@ -14,7 +14,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 public class Zealot {
 
   
-     
+    private static TestScreen testScreen = new TestScreen();
     private Sprite sprite;
     private int spriteIndex = 0;
     private boolean hasLoaded = false;
@@ -24,6 +24,7 @@ public class Zealot {
     private boolean contacted;
     private int contactCheck;
     private Body other;
+    private World world;
 
       public enum State {
         IDLE,RUN,ATTK
@@ -36,6 +37,7 @@ public class Zealot {
      public Zealot (final World world, final float x , final float y){
          this.x = x;
          this.y = y;
+         this.world = world;
            sprite = SpriteLoader.getSprite("images/zealot.json");
 
 
@@ -120,7 +122,10 @@ public class Zealot {
 
                        case RUN: state =State.IDLE;
                    }
-
+               }
+               if(event.key() == Key.Z){
+                   Leaf l = new Leaf(world,body.getPosition().x /TestScreen.M_PER_PIXEL +50,body.getPosition().y / TestScreen.M_PER_PIXEL);
+                    testScreen.addLeaf(l);
                }
            }
        }));
