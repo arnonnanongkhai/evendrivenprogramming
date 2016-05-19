@@ -124,6 +124,7 @@ public class Zealot {
                    }
                }
                if(event.key() == Key.Z){
+                   state = State.ATTK;
                    Leaf l = new Leaf(world,body.getPosition().x /TestScreen.M_PER_PIXEL +50,body.getPosition().y / TestScreen.M_PER_PIXEL);
                     testScreen.addLeaf(l);
                }

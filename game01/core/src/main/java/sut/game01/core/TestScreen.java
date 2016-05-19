@@ -41,7 +41,7 @@ public class TestScreen extends Screen {
     public static float M_PER_PIXEL = 1/26.666667f;
     private static int width = 24;
     private static int height = 18;
-    private boolean showDebugDraw = true;
+    private boolean showDebugDraw = false;
     private DebugDrawBox2D debugDraw;
 
 
@@ -70,7 +70,7 @@ public class TestScreen extends Screen {
 
 
 
-      Image  bgImage = assets().getImage("images/bg2.png");
+      Image  bgImage = assets().getImage("images/bg3.png");
       bgLayer = graphics().createImageLayer(bgImage);
    
       Image  startImage = assets().getImage("images/back.png");
@@ -84,12 +84,12 @@ public class TestScreen extends Screen {
       });
 
 
-      z = new Zealot(world,100f, 400f);
-      t = new Thief(world,500f,400f);
-      coin = new Coin(world,100f,250f);
-      coin2 = new Coin(world,200,250f);
-      coin3 = new Coin(world,300,250f);
-      coin4 = new Coin(world,400,250f);
+      z = new Zealot(world,100f, 200f);
+      t = new Thief(world,500f,200f);
+      coin = new Coin(world,100f,200f);
+      coin2 = new Coin(world,200,200f);
+      coin3 = new Coin(world,300,200f);
+      coin4 = new Coin(world,400,200f);
 
       
 
@@ -113,7 +113,8 @@ public class TestScreen extends Screen {
 
       Body ground = world.createBody(new BodyDef());
       EdgeShape groundShape = new EdgeShape();
-      groundShape.set(new Vec2(0,height), new Vec2(width, height));
+     // groundShape.set(new Vec2(0,height), new Vec2(width, height));
+      groundShape.set(new Vec2(0,height-1),new Vec2(width,height-1));
       ground.createFixture(groundShape, 0.0f);
 
       if(showDebugDraw){
@@ -202,7 +203,7 @@ public class TestScreen extends Screen {
       world.step(0.033f, 10, 10);
       z.update(delta);
       t.update(delta);
-      t.RunThief();
+     // t.RunThief();
       coin.update(delta);
       coin2.update(delta);
       coin3.update(delta);
