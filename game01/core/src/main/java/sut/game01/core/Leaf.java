@@ -79,6 +79,7 @@ public class Leaf {
         body.setLinearDamping(0.2f);
         body.setTransform(new Vec2(x, y), 0f);
         body.applyLinearImpulse(new Vec2(300f,0f), body.getPosition());
+        //body.setBullet(false );
         return body;
     }
 
