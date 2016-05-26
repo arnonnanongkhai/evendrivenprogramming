@@ -21,8 +21,10 @@ public class Thief {
     private boolean contacted;
     private int contactCheck;
     private Body other;
-
-
+    private World world;
+    private TestScreen testScreen = new TestScreen();
+    private Barring barring ;
+    public boolean checkContact = false;
 
 
     public enum State {
@@ -36,6 +38,7 @@ public class Thief {
     public Thief (final World world, final float x1 , final float y1){
         this.x = x1;
         this.y = y1;
+        this.world = world;
         sprite = SpriteLoader.getSprite("images/thief.json");
 
         sprite.addCallback(new Callback<Sprite>() {
@@ -70,7 +73,7 @@ public class Thief {
         fixtureDef.shape = shape;
         fixtureDef.density = 0.4f;
         fixtureDef.friction = 0.1f;
-        fixtureDef.restitution = 0.35f;
+       // fixtureDef.restitution = 0.35f;
         body.createFixture(fixtureDef);
 
         body.setFixedRotation(true);
@@ -90,7 +93,7 @@ public class Thief {
         return this.body;
     }
     public void RunThief(){
-        state = State.RUN;
+        state = State.ATTK;
         body.applyForce(new Vec2(-10f,0f),body.getPosition());
     }
     public void update(int delta) {
@@ -121,6 +124,8 @@ public class Thief {
             sprite.setSprite(spriteIndex);
             e = 0;
         }
+        if (checkContact == true)
+            body.setActive(false);
 
     }
     public void paint(Clock clock) {
@@ -129,6 +134,23 @@ public class Thief {
                 (body.getPosition().x / TestScreen.M_PER_PIXEL ),
                 body.getPosition().y / TestScreen.M_PER_PIXEL);
     }
+
+    public void shooting(){
+        if (checkContact == false){
+            barring = new Barring(world,body.getPosition().x /TestScreen.M_PER_PIXEL -100,body.getPosition().y / TestScreen.M_PER_PIXEL);
+            testScreen.shootThief(barring);
+        }else{
+
+        }
+
+
+    }
+    public void contact(Contact contact){
+        //body.setActive(false);
+        checkContact = true;
+        sprite.layer().setVisible(false);
+    }
+
 
 
 

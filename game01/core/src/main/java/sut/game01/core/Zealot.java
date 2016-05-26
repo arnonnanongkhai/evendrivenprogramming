@@ -177,9 +177,9 @@ public class Zealot {
                 sprite.layer().height()*TestScreen.M_PER_PIXEL / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.4f;
+        fixtureDef.density = 0.2f;
         fixtureDef.friction = 0.1f;
-        fixtureDef.restitution = 0.35f;
+       // fixtureDef.restitution = 0.35f;
         body.createFixture(fixtureDef);
 
         body.setFixedRotation(true);

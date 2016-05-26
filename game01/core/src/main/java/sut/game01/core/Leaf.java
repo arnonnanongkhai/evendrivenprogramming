@@ -72,6 +72,7 @@ public class Leaf {
         fixtureDef.density = 0.4f;
         fixtureDef.friction = 0.1f;
         fixtureDef.restitution = 0.35f;
+        fixtureDef.filter.groupIndex = -1;
         body.createFixture(fixtureDef);
 
         body.createFixture(fixtureDef);
