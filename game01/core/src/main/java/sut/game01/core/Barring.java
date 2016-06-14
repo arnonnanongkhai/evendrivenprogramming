@@ -12,6 +12,7 @@ import playn.core.Layer;
 import playn.core.util.Callback;
 import playn.core.util.Clock;
 import sut.game01.core.*;
+
 public class Barring {
     private float x;
     private float y;
@@ -48,14 +49,14 @@ public class Barring {
         fixtureDef.density = 1f;
         fixtureDef.friction = 1.0f;
         fixtureDef.restitution = 0.35f;
-        fixtureDef.filter.groupIndex = -1;
+       // fixtureDef.filter.groupIndex = -4;
         body.createFixture(fixtureDef);
 
         body.createFixture(fixtureDef);
 
         body.setLinearDamping(1.0f);
         body.setTransform(new Vec2(x, y), 0f);
-        body.applyLinearImpulse(new Vec2(-300f,0f), body.getPosition());
+        body.applyLinearImpulse(new Vec2(-500f,0f), body.getPosition());
         //body.setBullet(false );
         return body;
     }
@@ -67,6 +68,7 @@ public class Barring {
     public void update(int delta) {
         if(checkContact == true){
             body.setActive(false);
+            world.destroyBody(body);
             checkContact = false;
         }
 
@@ -89,6 +91,9 @@ public class Barring {
         //body.setActive(false);
         checkContact = true;
         barringLayer.setVisible(false);
+        world.destroyBody(body);
 
     }
+
+
 }

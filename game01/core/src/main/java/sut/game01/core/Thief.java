@@ -28,10 +28,10 @@ public class Thief {
 
 
     public enum State {
-        IDLE,RUN,ATTK
+        IDLE,RUN,ATTK ,LIDLE,LRUN,LAATK
     };
 
-    private State state  = State.IDLE;
+    private State state  = State.LIDLE;
     private int e =0;
     private int offset = 0;
 
@@ -71,6 +71,7 @@ public class Thief {
                 sprite.layer().height()*TestScreen.M_PER_PIXEL / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
+        fixtureDef.filter.groupIndex=  -3;
         fixtureDef.density = 0.4f;
         fixtureDef.friction = 0.1f;
        // fixtureDef.restitution = 0.35f;
@@ -112,10 +113,20 @@ public class Thief {
                     break;
                 case RUN: offset = 4;
                     break;
-                case  ATTK: offset = 8;
-                    if(spriteIndex ==10){
+                case ATTK: offset = 8;
+                    if(spriteIndex ==11){
                         state = State.IDLE;
                     }
+                    break;
+                case LIDLE: offset =12;
+                    if(spriteIndex == 15)
+                        state = State.LIDLE;
+                    break;
+                case LRUN: offset =16;
+                    break;
+                case LAATK: offset =20;
+                    if(spriteIndex == 23)
+                        state =State.LIDLE;
                     break;
             }
 
@@ -124,15 +135,21 @@ public class Thief {
             sprite.setSprite(spriteIndex);
             e = 0;
         }
-        if (checkContact == true)
+        if (checkContact == true){
             body.setActive(false);
+            world.destroyBody(body);
+
+        }
+
 
     }
-    public void paint(Clock clock) {
+     public void paint(Clock clock) {
         if(!hasLoaded) return;
         sprite.layer().setTranslation(
                 (body.getPosition().x / TestScreen.M_PER_PIXEL ),
                 body.getPosition().y / TestScreen.M_PER_PIXEL);
+
+
     }
 
     public void shooting(){
@@ -142,13 +159,13 @@ public class Thief {
         }else{
 
         }
-
-
     }
     public void contact(Contact contact){
         //body.setActive(false);
         checkContact = true;
         sprite.layer().setVisible(false);
+        //testScreen.Score++;
+
     }
 
 

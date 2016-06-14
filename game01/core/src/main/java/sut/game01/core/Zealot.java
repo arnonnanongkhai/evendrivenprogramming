@@ -18,8 +18,10 @@ public class Zealot {
     private Sprite sprite;
     private int spriteIndex = 0;
     private boolean hasLoaded = false;
-    private float x;
-    private float y;
+    public float x1;
+    public float y1;
+    public float zx1;
+    public float zy1;
     private Body body;
     private boolean contacted;
     private int contactCheck;
@@ -27,16 +29,23 @@ public class Zealot {
     private World world;
 
       public enum State {
-        IDLE,RUN,ATTK
-      }; 
+        IDLE, RUN, ATTK, LIDLE, LRUN, LATTK, UPRUN
+      };
+
+    public enum Direction{
+        LEFT, RIGHT
+    };
 
      private State state  = State.IDLE;
+    private Direction direction = Direction.RIGHT;
+    private boolean d = false;
+    private int d1 = 0;
      private int e =0;
      private int offset = 0;
 
      public Zealot (final World world, final float x , final float y){
-         this.x = x;
-         this.y = y;
+         this.x1 = x;
+         this.y1 = y;
          this.world = world;
            sprite = SpriteLoader.getSprite("images/zealot.json");
 
@@ -48,7 +57,7 @@ public class Zealot {
             public void onSuccess(Sprite result){
               sprite.setSprite(spriteIndex);
               sprite.layer().setOrigin(sprite.width() / 2f,sprite.height() /2f);
-              sprite.layer().setTranslation(x,y + 13f);
+              sprite.layer().setTranslation(x,y);
               body = initPhysicsBody(world, TestScreen.M_PER_PIXEL * x,
                         TestScreen.M_PER_PIXEL * y);
               hasLoaded = true;
@@ -60,14 +69,7 @@ public class Zealot {
 
            });
 
-         /*  sprite.layer().addListener(new Pointer.Adapter(){
-            @Override
-            public void onPointerEnd(Pointer.Event event){
-              state = State.ATTK;
-              spriteIndex = -1;
-              e = 0;
-            }
-           });*/
+       
 
      }
      public Layer layer(){
@@ -77,67 +79,82 @@ public class Zealot {
    public void update(int delta) {
       if (hasLoaded == false) return;
 
-      /* PlayN.keyboard().setListener(new Keyboard.Adapter() {
-           @Override
-           public void onKeyUp(Keyboard.Event event){
-               if(event.key() == Key.SPACE){
-                   switch(state){
-                       case IDLE: state =State.RUN; break;
-                       case RUN: state =State.ATTK; break;
-                       case ATTK: state =State.IDLE; break;
-                   }
-               }
-           }
-       });
-*/
 
 
        PlayN.keyboard().setListener((new  Keyboard.Adapter(){
            @Override
-           public void onKeyUp(Keyboard.Event event) {
+           public void onKeyDown(Keyboard.Event event) {
                if(event.key() == Key.RIGHT){
-                   switch(state){
+                  switch(state){
                        case IDLE: state =State.RUN;
                            if(state == State.RUN){
-                               body.applyForce(new Vec2(300f,0f),body.getPosition());
+                               body.applyForce(new Vec2(500f,0f),body.getPosition());
                                break;
-
                            }
-
-                       case RUN: state =State.IDLE;
+                      case LIDLE: state = State.IDLE;
+                          if(state == State.RUN){
+                              body.applyForce(new Vec2(500f,0f),body.getPosition());
+                              break;
+                          }
                    }
 
                }
-               if(event.key() == Key.SPACE){
+
+               if(event.key() == Key.LEFT){
+                   switch(state){
+                       case LIDLE: state =State.LRUN;
+                           if(state == State.LRUN){
+                               body.applyForce(new Vec2(-500f,0f),body.getPosition());
+                               break;
+                           }
+                       case IDLE: state = State.LRUN;
+                           if(state == State.LRUN){
+                               body.applyForce(new Vec2(-500f,0f),body.getPosition());
+                               break;
+                           }
+                   }
+               }
+
+
+
+
+               if(event.key() == Key.UP){
                    jump();
                }
-               if(event.key() == Key.LEFT){
-                   switch(state){
-                       case IDLE: state =State.RUN;
-                           if(state == State.RUN){
-                               body.applyForce(new Vec2(-300f,0f),body.getPosition());
-                               break;
-
-                           }
-
-                       case RUN: state =State.IDLE;
+             
+             /* if(event.key() == Key.SPACE){
+                   Leaf l;
+                   switch (state){
+                       case IDLE: state = State.ATTK;
+                           l = new Leaf(world,body.getPosition().x /TestScreen.M_PER_PIXEL +100,body.getPosition().y / TestScreen.M_PER_PIXEL,'R');
+                           testScreen.addLeaf(l);
+                           break;
+                       case LIDLE: state = State.LATTK;
+                           l = new Leaf(world,body.getPosition().x /TestScreen.M_PER_PIXEL -100,body.getPosition().y / TestScreen.M_PER_PIXEL,'L');
+                           testScreen.addLeaf(l);
+                           break;
+                       case RUN:  state = State.ATTK;
+                           l = new Leaf(world,body.getPosition().x /TestScreen.M_PER_PIXEL +100,body.getPosition().y / TestScreen.M_PER_PIXEL,'R');
+                           testScreen.addLeaf(l);
+                           break;
+                       case LRUN: state = State.LATTK;
+                           l = new Leaf(world,body.getPosition().x /TestScreen.M_PER_PIXEL -100,body.getPosition().y / TestScreen.M_PER_PIXEL,'L');
+                           testScreen.addLeaf(l);
+                           break;
+                       case  ATTK: state = State.ATTK;
+                           l = new Leaf(world,body.getPosition().x /TestScreen.M_PER_PIXEL +100,body.getPosition().y / TestScreen.M_PER_PIXEL,'R');
+                           testScreen.addLeaf(l);
+                           break;
+                       case LATTK: state = State.LATTK;
+                           l = new Leaf(world,body.getPosition().x /TestScreen.M_PER_PIXEL -100,body.getPosition().y / TestScreen.M_PER_PIXEL,'L');
+                           testScreen.addLeaf(l);
+                           break;
                    }
-               }
-               if(event.key() == Key.Z){
-                   state = State.ATTK;
-                   Leaf l = new Leaf(world,body.getPosition().x /TestScreen.M_PER_PIXEL +50,body.getPosition().y / TestScreen.M_PER_PIXEL);
-                    testScreen.addLeaf(l);
-               }
+               }*/
+
+
            }
        }));
-      /* PlayN.keyboard().setListener((new  Keyboard.Adapter(){
-           @Override
-           public void onKeyUp(Keyboard.Event event) {
-               if(event.key() == Key.LEFT){
-                   body.applyForce(new Vec2(-300f,0f),body.getPosition());
-               }
-           }
-       }));*/
 
 
       e += delta;
@@ -147,23 +164,40 @@ public class Zealot {
           case IDLE: offset = 0;
                      break;
           case RUN: offset = 4;
-                  if(spriteIndex ==6){
+                  if(spriteIndex ==7){
                       state = State.IDLE;
                   }
-                     break;
+              break;
           case ATTK: offset = 8;
-                    if(spriteIndex ==10){
-                      state = State.IDLE;
-                    }
-                    break;
+                 if(spriteIndex == 11)
+                     state = State.IDLE;
+                 break;
+            case LIDLE: offset = 12;
+                break;
+            case LRUN: offset = 16;
+                if (spriteIndex ==19)
+                    state = State.LIDLE;
+                break;
+            case LATTK: offset = 20;
+                if(spriteIndex == 23)
+                    state = State.LIDLE;
+                break;
+            case UPRUN:offset = 24;
+                if(spriteIndex == 26)
+                    state = State.IDLE;
+                break;
 
         }
           
           spriteIndex = offset + ((spriteIndex + 1) %4);
           sprite.setSprite(spriteIndex);
+          sprite.layer().setTranslation(body.getPosition().x / TestScreen.M_PER_PIXEL,
+                  body.getPosition().y / TestScreen.M_PER_PIXEL);
           e = 0;
       }
 
+     //  zx1 = body.getPosition().x;
+     //  zy1 = body.getPosition().y;
 
   }
     private Body initPhysicsBody(World world, float x, float y){
@@ -178,15 +212,17 @@ public class Zealot {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 0.2f;
+        fixtureDef.filter.groupIndex = -3;
         fixtureDef.friction = 0.1f;
        // fixtureDef.restitution = 0.35f;
         body.createFixture(fixtureDef);
 
         body.setFixedRotation(true);
+        body.setBullet(true);
 
         //body.createFixture(fixtureDef);
 
-        body.setLinearDamping(0.2f);
+       // body.setLinearDamping(0.2f);
         body.setTransform(new Vec2(x, y), 0f);
 
         return body;
@@ -215,9 +251,17 @@ public class Zealot {
     }
     public void jump(){
         body.applyForce(new Vec2(-10,-1600f),body.getPosition());
+        //zy1=100;
     }
     public Body getBody(){
         return this.body;
+    }
+
+    public float getX(){
+        return zx1;
+    }
+    public float getY(){
+        return zy1;
     }
 
 }
